@@ -1,7 +1,10 @@
 import numpy as np
 
 
-def ant_colony_optimization_vrp(n_cities, cities, n_ants, n_iterations, alpha, beta, evaporation_rate, Q, n_trucks):
+n_cities = 1500 # Number of cities
+cities = np.random.randint(1, 101, size=(n_cities, n_cities)) # Initizaliting adjcency matrix with weight from 1 to 100 and n cities
+
+def ant_colony_optimization_vrp(cities, n_ants, n_iterations, alpha, beta, evaporation_rate, Q, n_trucks):
     '''
     ACO for Vehicle Routing Problem.
     Parameters:
@@ -48,7 +51,7 @@ def ant_colony_optimization_vrp(n_cities, cities, n_ants, n_iterations, alpha, b
                 while np.any(np.logical_not(visited)) and cities_visited < max_cities_per_truck :
                     unvisited = np.where(np.logical_not(visited))[0] # getting the next unvisited cities
                     # calculating the probabilities of the next cities
-                    probabilities = pheromone[current_point][unvisited]**alpha / (cities[current_point][unvisited])**beta
+                    probabilities = pheromone[current_point][unvisited]**alpha * (1/cities[current_point][unvisited])**beta
                     # if all the probabilities are 0, set them to 1/len(probabilities) to avoid division by 0
                     if np.sum(probabilities) == 0:
                         probabilities = np.ones_like(probabilities) / len(probabilities)
@@ -84,18 +87,17 @@ def ant_colony_optimization_vrp(n_cities, cities, n_ants, n_iterations, alpha, b
 
     return best_paths, best_total_length # Return the best paths and the total length of the best paths
 
+# adjust the parameters to get the best result (add ants/iterations for precision (but slower) and increase alpha/beta for exploration)
+best_paths, best_total_length = ant_colony_optimization_vrp(cities, n_ants=10, n_iterations=40, alpha=2, beta=2, evaporation_rate=0.4, Q=70, n_trucks=3)
 
-def main():
-    n_cities = 1500 # Number of cities
-    cities = np.random.randint(1, 101, size=(n_cities, n_cities)) # Initizaliting adjcency matrix with weight from 1 to 100 and n cities
+# showing the best path and distance for each truck
+total_dist = 0
+for i, path in enumerate(best_paths): # Loop through the best paths
+    path_distance = 0
+    for j in range(len(path) - 1):
+        distance = cities[path[j]][path[j+1]]
+        path_distance += distance
+        total_dist+= distance
+    print(f"Truck {i+1}: {path} {path_distance}km")
 
-    # adjust the parameters to get the best result (add ants/iterations for precision (but slower) and increase alpha/beta for exploration)
-    best_paths, best_total_length = ant_colony_optimization_vrp(
-        n_cities, cities, n_ants=10, n_iterations=40, alpha=1, beta=2, evaporation_rate=0.4, Q=100, n_trucks=3)
-    
-    print(f"Best solution: {best_paths}")
-    print(f"Best total length: {best_total_length}")
-
-
-if __name__ == "__main__":
-    main()
+print(f"total distance: {total_dist}km")

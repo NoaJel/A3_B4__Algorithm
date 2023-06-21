@@ -1,5 +1,5 @@
 import numpy as np
-import tqdm
+from tqdm import tqdm
 
 from cvrp_aco.ant import Ant
 
@@ -20,20 +20,18 @@ class ACOalgo:
         self.cout_meilleure_solution = float('inf')
         
 
-    def lancer_algorithme(self, nombre_iterations):
+    def lancer_algorithme(self, nombre_iterations):        
         print("##")
         print("starting ACO algorithm :")
 
         for _ in tqdm(range(nombre_iterations)):
-
             self.construire_solutions()
             self.mettre_a_jour_pheromones()
             self.maj_meilleure_solution()
 
-        
         print("done !")
         print("##")
-
+        
     def construire_solutions(self):
         
         for ant in self.ants:

@@ -1,7 +1,7 @@
-from graph import Graph
-from ACOalgo import ACOalgo
-
 import matplotlib.pyplot as plt
+
+from cvrp_aco.graph import Graph
+from cvrp_aco.ACOalgo import ACOalgo
 
 
 # Paramètres du problème et de l'algorithme
@@ -37,9 +37,9 @@ for b in range(1,6):
     y_matrice.append([])
 
     for i in range(nbr_iterations):
-        print(i+1,"/",nbr_iterations)
+        print(i + 1, "/", nbr_iterations)
         aco.lancer_algorithme(1)
-        y_matrice[b-1].append(aco.cout_meilleure_solution)
+        y_matrice[b - 1].append(aco.cout_meilleure_solution)
     
     # Tracer les courbes
     label = 'beta : ' + str(b)
